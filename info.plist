@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.manavortex.timer</string>
+	<key>connections</key>
+	<dict>
+		<key>425172DD-9CFB-475E-95A6-04C05CE53DAE</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>D84E1548-095E-499B-BDA6-06A0C87C2CE0</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>D84E1548-095E-499B-BDA6-06A0C87C2CE0</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>88496C1B-958A-47E3-A99D-F80ED5D64233</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>manavortex</string>
+	<key>description</key>
+	<string>A timer workflow</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Timer</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>require 'time'
+
+# split at first space - first bit is timestamp
+args = (ARGV[0] or "").split(' ', 2)
+
+def trimString(message="")
+	if not message then return "" end
+	return message.strip ? message.strip : message 
+end
+
+def getDiffInSeconds(timeString)
+
+	if not timeString then 
+		throw Exception.new("you need to pass a time!")
+	end
+	# first, take care of time
+	timeString =  timeString.end_with?("h") ? timeString + "00m" : timeString
+	timeString =  timeString.end_with?("m") ? timeString + "00s" : timeString
+
+	timeString = timeString.gsub(/(?&lt;=\d)[hm]/, ":").gsub(/(?&lt;=\d)s/, "")
+
+	timeAry = timeString.split(":")
+	while timeAry.length &lt; 3 do timeAry.unshift "00" end
+
+	# assign to variables to avoid "string to fixnum" exception
+	hours = timeAry[0].to_i
+	minutes = timeAry[1].to_i
+	seconds = timeAry[2].to_i
+
+	destTime = Time.now + seconds + (minutes * 60) + (hours * 60 * 60)
+
+	diffInSecs = (destTime - Time.now).abs.round
+	
+	return trimString("#{diffInSecs}")
+end
+
+
+print getDiffInSeconds(args[0]), " " + trimString(args[1])</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>00_do_calculations.rb</string>
+				<key>type</key>
+				<integer>2</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>D84E1548-095E-499B-BDA6-06A0C87C2CE0</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>01_show_notification.sh</string>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>88496C1B-958A-47E3-A99D-F80ED5D64233</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>timer</string>
+				<key>subtext</key>
+				<string>timestamp message (time as 0h0m0s or hh:mm:ss)</string>
+				<key>text</key>
+				<string>Timer</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>425172DD-9CFB-475E-95A6-04C05CE53DAE</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>https://github.com/benknight/hue-alfred-workflow/blob/master/README.md</string>
+	<key>uidata</key>
+	<dict>
+		<key>425172DD-9CFB-475E-95A6-04C05CE53DAE</key>
+		<dict>
+			<key>xpos</key>
+			<integer>100</integer>
+			<key>ypos</key>
+			<integer>140</integer>
+		</dict>
+		<key>88496C1B-958A-47E3-A99D-F80ED5D64233</key>
+		<dict>
+			<key>xpos</key>
+			<integer>560</integer>
+			<key>ypos</key>
+			<integer>140</integer>
+		</dict>
+		<key>D84E1548-095E-499B-BDA6-06A0C87C2CE0</key>
+		<dict>
+			<key>note</key>
+			<string>alert</string>
+			<key>xpos</key>
+			<integer>260</integer>
+			<key>ypos</key>
+			<integer>140</integer>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>https://github.com/siyahmadde/timer-workflow</string>
+</dict>
+</plist>
